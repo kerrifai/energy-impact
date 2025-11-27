@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Energy Impact Planner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header>
+  <h1>Energy Impact Planner</h1>
+  <p>
+    Planificador de acciones de ahorro energético para hogares y empresas.
+    Calcula kWh ahorrados, CO₂ evitado y ahorro económico anual.
+  </p>
+</header>
+
+<main>
+  <div class="grid">
+    <section class="card">
+      <h2>Nueva acción de ahorro</h2>
+      <p class="subtitle">
+        Define una acción concreta (p.ej. <em>"Sustituir fluorescentes por LED"</em>).
+      </p>
+      <form id="action-form">
+        <label>
+          Nombre de la acción
+          <input type="text" id="name" placeholder="Cambiar iluminación a LED" required>
+        </label>
+
+        <label>
+          Categoría
+          <select id="category">
+            <option value="Oficina">Oficina</option>
+            <option value="Producción">Producción</option>
+            <option value="Hogar">Hogar</option>
+            <option value="Transporte">Transporte</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </label>
+
+        <div class="inline">
+          <div>
+            <label>
+              Consumo actual anual (kWh)
+              <input type="number" id="baseline-kwh" min="0" step="1" required>
+            </label>
+          </div>
+          <div>
+            <label>
+              Reducción estimada (%)
+              <input type="number" id="reduction-percent" min="1" max="100" step="1" required>
+            </label>
+          </div>
+        </div>
+
+        <div class="inline">
+          <div>
+            <label>
+              Precio de la energía (€/kWh)
+              <input type="number" id="price-kwh" min="0" step="0.01" required>
+            </label>
+          </div>
+          <div>
+            <label>
+              Factor de emisión (kg CO₂/kWh)
+              <input type="number" id="emission-factor" min="0" step="0.001" placeholder="0.23 por defecto">
+            </label>
+          </div>
+        </div>
+
+        <label>
+          Personas impactadas
+          <input type="number" id="people" min="1" step="1" value="1">
+        </label>
+
+        <button type="submit">Añadir acción</button>
+        <button type="button" class="secondary" id="btn-reset-form">Limpiar formulario</button>
+      </form>
+
+      <div class="metrics" id="preview-metrics" style="display:none;">
+        <div class="metric">
+          <span class="label">Ahorro anual estimado</span>
+          <span class="value" id="preview-kwh">- kWh</span>
+        </div>
+        <div class="metric">
+          <span class="label">CO₂ evitado al año</span>
+          <span class="value" id="preview-co2">- kg</span>
+        </div>
+        <div class="metric">
+          <span class="label">Ahorro económico anual</span>
+          <span class="value" id="preview-eur">- €</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Impacto total del plan</h2>
+      <p class="subtitle">
+        Suma de todas las acciones registradas. Ideal para presentar a dirección o al equipo.
+      </p>
+
+      <div class="metrics">
+        <div class="metric">
+          <span class="label">Ahorro total anual</span>
+          <span class="value" id="total-kwh">0 kWh</span>
+        </div>
+        <div class="metric">
+          <span class="label">CO₂ total evitado</span>
+          <span class="value" id="total-co2">0 kg</span>
+        </div>
+        <div class="metric">
+          <span class="label">Ahorro total anual</span>
+          <span class="value" id="total-eur">0 €</span>
+        </div>
+      </div>
+
+      <div class="note">
+        Nota: por defecto se usa 0.23 kg CO₂/kWh si no se indica otro factor.
+      </div>
+
+      <div style="margin-top: 16px;">
+        <button type="button" id="btn-clear-all" class="danger">
+          Borrar todas las acciones
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <section class="card" style="margin-top: 20px;">
+    <div class="toolbar">
+      <div>
+        <h2 style="margin:0;">Acciones del plan</h2>
+        <p class="subtitle" style="margin-top:4px;">
+          Lista de acciones definidas. Puedes filtrarlas por categoría.
+        </p>
+      </div>
+      <div>
+        <label style="margin:0; font-size:0.8rem;">
+          Filtrar por categoría
+          <select id="filter-category">
+            <option value="Todas">Todas</option>
+            <option value="Oficina">Oficina</option>
+            <option value="Producción">Producción</option>
+            <option value="Hogar">Hogar</option>
+            <option value="Transporte">Transporte</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <table id="actions-table">
+      <thead>
+      <tr>
+        <th>Acción</th>
+        <th>Categoría</th>
+        <th class="text-right">Ahorro (kWh/año)</th>
+        <th class="text-right">CO₂ (kg/año)</th>
+        <th class="text-right">Ahorro (€ /año)</th>
+        <th>Impacto</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody id="actions-tbody"></tbody>
+    </table>
+    <div class="empty" id="empty-message">
+      Aún no hay acciones registradas. Empieza añadiendo una en el panel de la izquierda.
+    </div>
+  </section>
+</main>
+
+<script type="module" src="./src/app.js"></script>
+</body>
+</html>
