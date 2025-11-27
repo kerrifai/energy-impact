@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:6
+    container_name: energy-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: energy-backend
+    restart: unless-stopped
+    environment:
+      # Sobrescribimos MONGO_URI del .env dentro del contenedor
+      - MONGO_URI=mongodb://mongo:27017/energy_impact
+      - PORT=4000
+    depends_on:
+      - mongo
+    ports:
+      - "4000:4000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: energy-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      # Puerto externo 5500 -> puerto 80 del contenedor Nginx
+      - "5500:80"
+
+volumes:
+  mongo_data:
